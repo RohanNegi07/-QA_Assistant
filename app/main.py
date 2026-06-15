@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.api import ask, health
 from app.rag.pipeline import rag_pipeline
@@ -29,6 +30,14 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+@app.get("/", tags=["root"])
+async def root():
+    return JSONResponse(
+        status_code=200,
+        content={"message": "Python Q&A Assistant API is running", "docs": "/docs"},
+    )
+
 
 app.include_router(health.router, tags=["health"])
 app.include_router(ask.router, tags=["ask"])
